@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.game'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // MySQL Connector dependency
+    implementation files('/Users/jathanneider/Desktop/StreetFighterStickFigures/mysql-connector-j-9.2.0.jar')
+    // OCSF dependency – place your OCSF jar in the libs folder
+    implementation files('/Users/jathanneider/Desktop/StreetFighterStickFigures/ocsf.jar')
+}
+
+// The default 'run' task uses HostLauncher, for example
+application {
+    mainClass = 'com.game.launcher.HostLauncher'
+}
+
+task runHost(type: JavaExec) {
+    group = 'application'
+    description = 'Run the game in host mode (server + client).'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.game.launcher.HostLauncher'
+}
+
+task runClient(type: JavaExec) {
+    group = 'application'
+    description = 'Run the game in client-only mode.'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.game.launcher.ClientLauncher'
+}

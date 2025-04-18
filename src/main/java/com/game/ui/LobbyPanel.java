@@ -118,7 +118,7 @@ public class LobbyPanel extends JPanel implements GameClient.LobbyResponseListen
         SwingUtilities.invokeLater(() -> {
             // If this user is one of the players, we transition to the game panel
             if (msg.getPlayer1().equals(user.getUsername()) || msg.getPlayer2().equals(user.getUsername())) {
-                mainFrame.showGamePanel(msg.getPlayer1(), msg.getPlayer2());
+                mainFrame.showGamePanel(user.getUsername(), msg.getPlayer1(), msg.getPlayer2());
             } else {
                 // If we aren't in this match, ignore or show a message
                 statusLabel.setText("A match started between other players.");

@@ -42,10 +42,10 @@ public class MainFrame extends JFrame {
         setSize(600, 400);
     }
 
-    public void showGamePanel(String player1, String player2) {
+    public void showGamePanel(String thisUsername, String player1, String player2) {
         // Assuming 'player1' is the local user controlling this client:
         // Pass the client and all usernames to GamePanel’s constructor that includes networking logic.
-        GamePanel gamePanel = new GamePanel(client, player1, player1, player2);
+        GamePanel gamePanel = new GamePanel(client, thisUsername, player1, player2);
         cardPanel.add(gamePanel, "game");
         cardLayout.show(cardPanel, "game");
         setSize(800, 600);

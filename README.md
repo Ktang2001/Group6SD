@@ -31,6 +31,24 @@ After you clone the repository and have the program loaded into your IDE do the 
 You should have two GUIs now. You can create two user accounts and then log in to them. Once logged in, you will see a space where it shows Stats, and two buttons at the bottom
 of the GUI. Select Create Match in one window, and then select Join Match in the other window. The Game will launch.
 
+# Running the JUnit Test Case
+
+- build.gradle is configured to accomodate JUnit tests
+
+- In Command prompt, run the following commands:
+- Mac/Linux
+  ```
+  ./gradlew build
+  ./gradlew test
+  ```
+- Windows
+  ```
+  gradlew build
+  gradlew test
+  ```
+
+- Results of the test will be in build/test-results/test
+
 # Note
 
 - If you are testing the game on one machine, you will notice that you can only control whichever window you select, and at the moment only one character moves. I believe the functionality

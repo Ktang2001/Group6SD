@@ -1,3 +1,8 @@
+/*
+ * DatabaseManagerTest.java - Written by Mason Simpson
+ * Uses JUnit 4 to test the database and ensures that logging in/creating an account is working properly
+ */
+
 import static org.junit.Assert.*;
 import org.junit.*;
 
@@ -12,7 +17,8 @@ public class DatabaseManagerTest {
     public static void setup() {
         DatabaseManager.initializeDatabase();
     }
-
+    
+    // Clears test user so that you don't have to change the test username every time you run the test
     @Before
     public void clearTestUser() throws SQLException {
         Connection conn = DatabaseManager.getConnection();

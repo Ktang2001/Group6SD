@@ -1,3 +1,7 @@
+/*
+ * DatabaseManager.java - Written by Mason Simpson
+ * Similar to lab8out - simple database using MySQL that stores and authenticates usernames and passwords.
+ */
 
 package com.game.database;
 

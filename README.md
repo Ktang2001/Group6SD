@@ -6,7 +6,8 @@ Project is currently bare bones. You will need 2 Terminal or Command line window
 
 After you clone the repository and have the program loaded into your IDE do the following:
 
-- In DatabaseManager.java, Change USER and PASS to your personal login information for MySQL.
+- In db.properties, be sure the user and password are set to your login for MySQL.
+- Additionally, change the url if needed.
 - Save All
 - Open two Terminal or Command line windows and navigate to the project folder.
 # In the first window run the following command:

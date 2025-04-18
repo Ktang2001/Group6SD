@@ -12,9 +12,10 @@ repositories {
 
 dependencies {
     // MySQL Connector dependency
-    implementation files('/Users/jathanneider/Desktop/StreetFighterStickFigures/mysql-connector-j-9.2.0.jar')
+    implementation files('C:/Users/hexzy/git/Group6SD/mysql-connector-j-9.2.0.jar')
     // OCSF dependency – place your OCSF jar in the libs folder
-    implementation files('/Users/jathanneider/Desktop/StreetFighterStickFigures/ocsf.jar')
+    implementation files('C:/Users/hexzy/git/Group6SD/ocsf.jar')
+    testImplementation 'junit:junit:4.13.2'
 }
 
 // The default 'run' task uses HostLauncher, for example

@@ -1,7 +1,7 @@
 package com.game.ui;
 
 import com.game.network.GameClient;
-import com.game.network.messages.MovementMessage;
+import com.game.network.messages.*;
 
 import javax.swing.*;
 import java.awt.*;

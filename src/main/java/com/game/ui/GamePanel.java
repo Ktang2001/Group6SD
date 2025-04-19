@@ -191,8 +191,10 @@ public class GamePanel extends JPanel implements KeyListener {
 	private void sendAttackRequest(String attacker) {
 	    try {
 	        client.sendToServer(new AttackMessage(attacker));
+	        System.out.println("Attack Request sent")
 	    } catch (IOException ex) {
 	        ex.printStackTrace();
+	        System.out.println("Attack request Failed")
 	    }
 	}
 

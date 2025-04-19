@@ -10,7 +10,7 @@ public class ClientLauncher {
         // This one just starts a client, assuming a server is already running.
         GameClient client = null;
         try {
-            client = new GameClient("localhost", 8300);
+            client = new GameClient("10.251.131.23", 8300);
             client.openConnection();
         } catch (Exception e) {
             e.printStackTrace();

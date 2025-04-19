@@ -5,16 +5,21 @@ import ocsf.server.ConnectionToClient;
 import com.game.database.DatabaseManager;
 import com.game.network.messages.*;
 import java.util.concurrent.ConcurrentHashMap;
-import com.game.network.messages.MovementMessage;
-import com.game.network.messages.GameUpdateMessage;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class GameServer extends AbstractServer {
-    // Track connections by username so we can message them directly
+    // Track connections by username
     private Map<String, ConnectionToClient> clientConnections = new HashMap<>();
     private Map<String, int[]> playerPositions = new ConcurrentHashMap<>();
+    private static final int MIN_X = 50;
+    private static final int MAX_X = 750;
+    private static final int MIN_Y = 50;
+    private static final int MAX_Y = 550;
+
+    // Player health variables
+    private int p1Health = 100; // Player 1 health
+    private int p2Health = 100; // Player 2 health
 
     // A single “waiting user” for a match (null if no one is waiting)
     private String waitingUser = null;
@@ -26,7 +31,7 @@ public class GameServer extends AbstractServer {
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         try {
-            // Keep track of the username -> client connection
+            // Handle different types of messages
             if (msg instanceof LoginMessage) {
                 LoginMessage login = (LoginMessage) msg;
                 User user = DatabaseManager.authenticateUser(login.getUsername(), login.getPassword());
@@ -35,31 +40,27 @@ public class GameServer extends AbstractServer {
                 if (valid) {
                     clientConnections.put(login.getUsername(), client);
                 }
-            }
-            else if (msg instanceof CreateAccountMessage) {
+            } else if (msg instanceof CreateAccountMessage) {
                 CreateAccountMessage cam = (CreateAccountMessage) msg;
                 boolean success = DatabaseManager.createUser(cam.getUsername(), cam.getPassword());
                 String message = success ? "Account created successfully." : "Failed to create account. Username may already exist.";
                 client.sendToClient(new CreateAccountResponse(success, message));
-            }
-            else if (msg instanceof CreateMatchMessage) {
+            } else if (msg instanceof CreateMatchMessage) {
                 CreateMatchMessage cmm = (CreateMatchMessage) msg;
                 String username = cmm.getUsername();
 
-                // If no one is waiting, set this user as the waiting user
+                // Handle match creation
                 if (waitingUser == null) {
                     waitingUser = username;
                     client.sendToClient(new CreateMatchResponse(true, "Waiting for other player..."));
                 } else {
-                    // If someone is already waiting, either reject or handle differently
                     client.sendToClient(new CreateMatchResponse(false, "Another user is already waiting. Please join instead."));
                 }
-            }
-            else if (msg instanceof JoinMatchMessage) {
+            } else if (msg instanceof JoinMatchMessage) {
                 JoinMatchMessage jmm = (JoinMatchMessage) msg;
                 String username = jmm.getUsername();
 
-                // If someone is waiting, pair them
+                // Handle match joining
                 if (waitingUser != null && !waitingUser.equals(username)) {
                     String player1 = waitingUser;
                     String player2 = username;
@@ -67,7 +68,7 @@ public class GameServer extends AbstractServer {
                     // Clear waitingUser since we've paired them
                     waitingUser = null;
 
-                    // Send MatchStartedMessage to both
+                    // Notify both players that the match has started
                     ConnectionToClient client1 = clientConnections.get(player1);
                     ConnectionToClient client2 = clientConnections.get(player2);
                     if (client1 != null) {
@@ -77,33 +78,43 @@ public class GameServer extends AbstractServer {
                         client2.sendToClient(new MatchStartedMessage(player1, player2));
                     }
                 } else {
-                    // No one is waiting, or you’re trying to join your own match
                     client.sendToClient(new CreateMatchResponse(false, "No available match to join."));
                 }
-            }
-            if (msg instanceof MovementMessage) {
+            } else if (msg instanceof MovementMessage) { // Fixed 'else' alignment
                 MovementMessage mm = (MovementMessage) msg;
                 String user = mm.getUsername();
                 int[] pos = playerPositions.get(user);
                 if (pos == null) {
-                    // If not present yet, give them a default
-                    pos = new int[]{100, 200};
+                    pos = new int[]{100, 200}; // Default position
                 }
-                // Apply movement
-                pos[0] += mm.getDeltaX();
-                pos[1] += mm.getDeltaY();
+
+                // Apply movement and enforce boundaries
+                pos[0] = Math.max(MIN_X, Math.min(MAX_X, pos[0] + mm.getDeltaX())); // Horizontal boundaries
+                pos[1] = Math.max(MIN_Y, Math.min(MAX_Y, pos[1] + mm.getDeltaY())); // Vertical boundaries
+
                 playerPositions.put(user, pos);
 
                 // Broadcast updated positions to ALL clients
-                GameUpdateMessage gum = new GameUpdateMessage(playerPositions);
+                GameUpdateMessage gum = new GameUpdateMessage(playerPositions, p1Health, p2Health);
                 sendToAllClients(gum);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) { // Added matching 'catch' block
+            e.printStackTrace(); // Log any exceptions that occur
+        }
+    }
+
+    // Handle health updates
+    public void handleHealthUpdate(String player, int newHealth) {
+        if (player.equals("player1")) { // Replace with actual player identifiers
+            p1Health = newHealth;
+        } else if (player.equals("player2")) {
+            p2Health = newHealth;
         }
 
-
+        // Create and send the updated message
+        GameUpdateMessage gum = new GameUpdateMessage(playerPositions, p1Health, p2Health);
+        sendToAllClients(gum);
     }
 
     @Override

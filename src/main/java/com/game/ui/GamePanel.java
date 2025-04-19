@@ -65,24 +65,18 @@ public class GamePanel extends JPanel implements KeyListener {
         int adjustedP2X = (int) (p2X * (panelWidth / 800.0));
         int adjustedP2Y = (int) (p2Y * (panelHeight / 600.0));
 
-        // Draw player info and health bars
-        g.setColor(Color.BLACK);
-        g.drawString("Player 1: " + player1, 20, 20);
-        g.drawString("Player 2: " + player2, 20, 40);
-
-        // Draw Player 1 health bar
+     // Draw health bars
         g.setColor(Color.RED);
-        int p1BarWidth = (int) (200 * (p1Health / (double) MAX_HEALTH)); // Scaled width
-        g.fillRect(100, 10, p1BarWidth, 10); // Position and size of health bar
+        int p1BarWidth = (int) (200 * (p1Health / 100.0));
+        g.fillRect(100, 10, p1BarWidth, 10);
 
-        // Draw Player 2 health bar
         g.setColor(Color.BLUE);
-        int p2BarWidth = (int) (200 * (p2Health / (double) MAX_HEALTH)); // Scaled width
+        int p2BarWidth = (int) (200 * (p2Health / 100.0));
         g.fillRect(100, 30, p2BarWidth, 10);
 
-        // Draw Players
-        drawStickFigure(g, adjustedP1X, adjustedP1Y, Color.RED);
-        drawStickFigure(g, adjustedP2X, adjustedP2Y, Color.BLUE);
+        // Draw players (existing code for stick figures)
+        drawStickFigure(g, p1X, p1Y, Color.RED);
+        drawStickFigure(g, p2X, p2Y, Color.BLUE);
     }
 
 
@@ -137,6 +131,16 @@ public class GamePanel extends JPanel implements KeyListener {
                 dy = MOVE_SPEED;
             }
         }
+        
+        if (thisUsername.equals(player1)) {
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) { // Attack key for Player 1
+                sendAttackRequest(player1);
+            }
+        } else if (thisUsername.equals(player2)) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) { // Attack key for Player 2
+                sendAttackRequest(player2);
+            }
+        }
 
         // Send movement update to the server
         if (dx != 0 || dy != 0) {
@@ -181,6 +185,15 @@ public class GamePanel extends JPanel implements KeyListener {
 	        p2Health = Math.max(0, p2Health - amount);
 	    }
 	    repaint();
+	}
+	
+	
+	private void sendAttackRequest(String attacker) {
+	    try {
+	        client.sendToServer(new AttackMessage(attacker));
+	    } catch (IOException ex) {
+	        ex.printStackTrace();
+	    }
 	}
 
 

@@ -98,6 +98,30 @@ public class GameServer extends AbstractServer {
                 GameUpdateMessage gum = new GameUpdateMessage(playerPositions, p1Health, p2Health);
                 sendToAllClients(gum);
             }
+            else if (msg instanceof AttackMessage) {
+                AttackMessage attackMsg = (AttackMessage) msg;
+                String attacker = attackMsg.getAttacker();
+                String opponent = attacker.equals("player1") ? "player2" : "player1";
+
+                int[] attackerPos = playerPositions.get(attacker);
+                int[] opponentPos = playerPositions.get(opponent);
+
+                if (attackerPos != null && opponentPos != null) {
+                    double distance = Math.sqrt(Math.pow(attackerPos[0] - opponentPos[0], 2) + Math.pow(attackerPos[1] - opponentPos[1], 2));
+                    if (distance <= 50) { // Check if within attack range
+                        if (opponent.equals("player1")) {
+                            p1Health = Math.max(0, p1Health - 5); // Deduct health for Player 1
+                        } else if (opponent.equals("player2")) {
+                            p2Health = Math.max(0, p2Health - 5); // Deduct health for Player 2
+                        }
+
+                        // Broadcast updated health and positions
+                        GameUpdateMessage gum = new GameUpdateMessage(playerPositions, p1Health, p2Health);
+                        sendToAllClients(gum);
+                    }
+                }
+            }
+
 
         } catch (Exception e) { // Added matching 'catch' block
             e.printStackTrace(); // Log any exceptions that occur

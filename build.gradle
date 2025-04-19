@@ -12,9 +12,9 @@ repositories {
 
 dependencies {
     // MySQL Connector dependency
-    implementation files('C:/Users/hexzy/git/Group6SD/mysql-connector-j-9.2.0.jar')
+    implementation files('C:/Users/ktang/OneDrive/Desktop/Testing Connection/Group6SD/mysql-connector-j-9.2.0.jar')
     // OCSF dependency – place your OCSF jar in the libs folder
-    implementation files('C:/Users/hexzy/git/Group6SD/ocsf.jar')
+    implementation files('C:/Users/ktang/OneDrive/Desktop/Testing Connection/Group6SD/ocsf.jar')
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.11.0'
     

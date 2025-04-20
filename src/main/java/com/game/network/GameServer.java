@@ -101,8 +101,8 @@ public class GameServer extends AbstractServer {
             else if (msg instanceof AttackMessage) {
                 AttackMessage attackMsg = (AttackMessage) msg;
                 String attacker = attackMsg.getAttacker();
-                String opponent = attacker.equals("player1") ? "player2" : "player1";
-                
+                String opponent = attackMsg.getOpponent();
+              
                 System.out.println("Attack received from " + attacker + " targeting " + opponent);
 
                 int[] attackerPos = playerPositions.get(attacker);

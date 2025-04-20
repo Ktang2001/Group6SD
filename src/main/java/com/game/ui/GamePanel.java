@@ -104,6 +104,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+    	
         int dx = 0, dy = 0;
 
         // Handle Player 1 movement
@@ -134,11 +135,11 @@ public class GamePanel extends JPanel implements KeyListener {
         
         if (thisUsername.equals(player1)) {
             if (e.getKeyCode() == KeyEvent.VK_SPACE) { // Attack key for Player 1
-                sendAttackRequest(player1);
+                sendAttackRequest(player1, player2);
             }
         } else if (thisUsername.equals(player2)) {
             if (e.getKeyCode() == KeyEvent.VK_ENTER) { // Attack key for Player 2
-                sendAttackRequest(player2);
+                sendAttackRequest(player2, player1);
             }
         }
 
@@ -188,9 +189,9 @@ public class GamePanel extends JPanel implements KeyListener {
 	}
 	
 	
-	private void sendAttackRequest(String attacker) {
+	private void sendAttackRequest(String attacker, String opponent) {
 	    try {
-	        client.sendToServer(new AttackMessage(attacker));
+	        client.sendToServer(new AttackMessage(attacker, opponent));
 	        System.out.println("Attack Request sent");
 	    } catch (IOException ex) {
 	        ex.printStackTrace();

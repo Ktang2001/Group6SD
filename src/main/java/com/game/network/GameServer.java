@@ -16,6 +16,8 @@ public class GameServer extends AbstractServer {
     private static final int MAX_X = 750;
     private static final int MIN_Y = 50;
     private static final int MAX_Y = 550;
+    private String player1;
+    private String player2;
 
     // Player health variables
     private int p1Health = 100; // Player 1 health
@@ -62,8 +64,8 @@ public class GameServer extends AbstractServer {
 
                 // Handle match joining
                 if (waitingUser != null && !waitingUser.equals(username)) {
-                    String player1 = waitingUser;
-                    String player2 = username;
+                    player1 = waitingUser;
+                    player2 = username;
 
                     // Clear waitingUser since we've paired them
                     waitingUser = null;
@@ -104,20 +106,26 @@ public class GameServer extends AbstractServer {
                 String opponent = attackMsg.getOpponent();
               
                 System.out.println("Attack received from " + attacker + " targeting " + opponent);
+                System.out.println("Player 1 is: " + player1 + "\nPlayer 2 is: " + player2);
 
                 int[] attackerPos = playerPositions.get(attacker);
                 int[] opponentPos = playerPositions.get(opponent);
+                System.out.println(attacker + " pos: " + attackerPos + "\n" + opponent + " pos: " + opponentPos);
 
                 if (attackerPos != null && opponentPos != null) {
                     double distance = Math.sqrt(Math.pow(attackerPos[0] - opponentPos[0], 2) + Math.pow(attackerPos[1] - opponentPos[1], 2));
                     if (distance <= 50) { // Check if within attack range
-                        if (opponent.equals("player1")) {
+                        if (opponent.equals(player1)) {
+                        	System.out.println(player1 + " health before attack: " + p1Health);
                             p1Health = Math.max(0, p1Health - 5); // Deduct health for Player 1
-                            System.out.println("player1 was attacked");
+                            System.out.println(opponent + " was attacked");
+                            System.out.println(player1 + " health after attack: " + p1Health);
                             
-                        } else if (opponent.equals("player2")) {
+                        } else if (opponent.equals(player2)) {
+                        	System.out.println(player2 + " health before attack: " + p2Health);
                             p2Health = Math.max(0, p2Health - 5); // Deduct health for Player 2
-                            System.out.println("player2 was attacked");
+                            System.out.println(opponent + " was attacked");
+                            System.out.println(player2 + " health after attack: " + p2Health);
                         }
 
                         // Broadcast updated health and positions

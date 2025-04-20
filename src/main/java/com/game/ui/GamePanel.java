@@ -179,12 +179,10 @@ public class GamePanel extends JPanel implements KeyListener {
 	    g.drawLine(x, y + 50, x + 10, y + 70); // Right leg
 	}
 	
-	public void reduceHealth(String player, int amount) {
-	    if (player.equals(player1)) {
-	        p1Health = Math.max(0, p1Health - amount);
-	    } else if (player.equals(player2)) {
-	        p2Health = Math.max(0, p2Health - amount);
-	    }
+	public void updateHealth(int player1Health, int player2Health) {
+	    this.p1Health = player1Health;
+	    this.p2Health = player2Health;
+	    revalidate();
 	    repaint();
 	}
 	

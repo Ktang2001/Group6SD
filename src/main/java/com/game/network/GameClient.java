@@ -83,6 +83,8 @@ public class GameClient extends AbstractClient {
             System.out.println("Received game update message from server");
             if (gamePanel != null) {
                 gamePanel.updatePositions(updateMsg.getPlayerPositions());
+                gamePanel.reduceHealth("player1", 100 - updateMsg.getP1Health());
+                gamePanel.reduceHealth("player2", 100 - updateMsg.getP2Health());
             }
         }
     }

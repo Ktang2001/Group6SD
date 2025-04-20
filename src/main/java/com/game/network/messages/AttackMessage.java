@@ -8,7 +8,7 @@ public class AttackMessage implements Serializable {
 
 	public AttackMessage(String attacker) {
 		this.attacker = attacker;
-		System.out.println("Attack Message Was Created")
+		System.out.println("Attack Message Was Created");
 	}
 
 	public String getAttacker() {

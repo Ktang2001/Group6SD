@@ -102,6 +102,8 @@ public class GameServer extends AbstractServer {
                 AttackMessage attackMsg = (AttackMessage) msg;
                 String attacker = attackMsg.getAttacker();
                 String opponent = attacker.equals("player1") ? "player2" : "player1";
+                
+                System.out.println("Attack received from " + attacker + " targeting " + opponent);
 
                 int[] attackerPos = playerPositions.get(attacker);
                 int[] opponentPos = playerPositions.get(opponent);
@@ -111,11 +113,11 @@ public class GameServer extends AbstractServer {
                     if (distance <= 50) { // Check if within attack range
                         if (opponent.equals("player1")) {
                             p1Health = Math.max(0, p1Health - 5); // Deduct health for Player 1
-                            System.out.println("player1 was attacked")
+                            System.out.println("player1 was attacked");
                             
                         } else if (opponent.equals("player2")) {
                             p2Health = Math.max(0, p2Health - 5); // Deduct health for Player 2
-                            System.out.println("player2 was attacked")
+                            System.out.println("player2 was attacked");
                         }
 
                         // Broadcast updated health and positions
@@ -135,10 +137,10 @@ public class GameServer extends AbstractServer {
     public void handleHealthUpdate(String player, int newHealth) {
         if (player.equals("player1")) { // Replace with actual player identifiers
             p1Health = newHealth;
-            System.out.println("Health Update player 1")
+            System.out.println("Health Update player 1");
         } else if (player.equals("player2")) {
             p2Health = newHealth;
-            System.out.println("Health Update player 2")
+            System.out.println("Health Update player 2");
             
         }
 

@@ -5,6 +5,8 @@ import com.game.network.messages.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -31,6 +33,12 @@ public class GamePanel extends JPanel implements KeyListener {
     private final String thisUsername;
     private final String player1;
     private final String player2;
+    
+    // Tracks which keys are currently being held down for smooth & diagonal movement
+    private final Set<Integer> pressedKeys = new HashSet<>();
+    
+    // Timer to check and apply movement
+    private Timer movementTimer;
 
     // Positions for each stick figure
     private int p1X = 100, p1Y = 200;
@@ -48,6 +56,11 @@ public class GamePanel extends JPanel implements KeyListener {
         setFocusable(true);
         requestFocusInWindow();
         addKeyListener(this);
+
+        // Timer goes off every 16ms
+        movementTimer = new Timer(16, e -> handleContinuousMovement());
+        movementTimer.start();
+
 
         // Let the client know this panel is where we draw updates
         client.setGamePanel(this);
@@ -100,56 +113,46 @@ public class GamePanel extends JPanel implements KeyListener {
 
         repaint();
     }
-
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-    	
+    
+    // Called repeatedly by the timer (every 16ms) for smooth movement
+    public void handleContinuousMovement() {
         int dx = 0, dy = 0;
 
-        // Handle Player 1 movement
         if (thisUsername.equals(player1)) {
-            if (e.getKeyCode() == KeyEvent.VK_A && p1X > MIN_X) { // Move left
-                dx = -MOVE_SPEED;
-            } else if (e.getKeyCode() == KeyEvent.VK_D && p1X < MAX_X) { // Move right
-                dx = MOVE_SPEED;
-            } else if (e.getKeyCode() == KeyEvent.VK_W && p1Y > MIN_Y) { // Move up
-                dy = -MOVE_SPEED;
-            } else if (e.getKeyCode() == KeyEvent.VK_S && p1Y < MAX_Y) { // Move down
-                dy = MOVE_SPEED;
-            }
-        }
-
-        // Handle Player 2 movement
-        if (thisUsername.equals(player2)) {
-            if (e.getKeyCode() == KeyEvent.VK_LEFT && p2X > MIN_X) { // Move left
-                dx = -MOVE_SPEED;
-            } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && p2X < MAX_X) { // Move right
-                dx = MOVE_SPEED;
-            } else if (e.getKeyCode() == KeyEvent.VK_UP && p2Y > MIN_Y) { // Move up
-                dy = -MOVE_SPEED;
-            } else if (e.getKeyCode() == KeyEvent.VK_DOWN && p2Y < MAX_Y) { // Move down
-                dy = MOVE_SPEED;
-            }
-        }
-        
-        if (thisUsername.equals(player1)) {
-            if (e.getKeyCode() == KeyEvent.VK_SPACE) { // Attack key for Player 1
-                sendAttackRequest(player1, player2);
-            }
+            if (pressedKeys.contains(KeyEvent.VK_A)) dx -= MOVE_SPEED;
+            if (pressedKeys.contains(KeyEvent.VK_D)) dx += MOVE_SPEED;
+            if (pressedKeys.contains(KeyEvent.VK_W)) dy -= MOVE_SPEED;
+            if (pressedKeys.contains(KeyEvent.VK_S)) dy += MOVE_SPEED;
         } else if (thisUsername.equals(player2)) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) { // Attack key for Player 2
-                sendAttackRequest(player2, player1);
-            }
+            if (pressedKeys.contains(KeyEvent.VK_LEFT)) dx -= MOVE_SPEED;
+            if (pressedKeys.contains(KeyEvent.VK_RIGHT)) dx += MOVE_SPEED;
+            if (pressedKeys.contains(KeyEvent.VK_UP)) dy -= MOVE_SPEED;
+            if (pressedKeys.contains(KeyEvent.VK_DOWN)) dy += MOVE_SPEED;
         }
 
-        // Send movement update to the server
+        // If no movement is detected, then nothing is sent
         if (dx != 0 || dy != 0) {
             try {
                 client.sendToServer(new MovementMessage(thisUsername, dx, dy));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        }
+    }
+
+
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    	
+    	// Adds key to the hash table to get processed by movement timer
+    	pressedKeys.add(e.getKeyCode());
+
+        // Handle attack keys
+        if (thisUsername.equals(player1) && e.getKeyCode() == KeyEvent.VK_SPACE) {
+            sendAttackRequest(player1, player2);
+        } else if (thisUsername.equals(player2) && e.getKeyCode() == KeyEvent.VK_ENTER) {
+            sendAttackRequest(player2, player1);
         }
     }
 
@@ -200,7 +203,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
 
     @Override
-    public void keyReleased(KeyEvent e) { }
+    public void keyReleased(KeyEvent e) { 
+    	pressedKeys.remove(e.getKeyCode());
+    }
 
     @Override
     public void keyTyped(KeyEvent e) { }

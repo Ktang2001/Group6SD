@@ -14,6 +14,7 @@ public class MainFrame extends JFrame {
     public MainFrame(GameClient client) {
         super("Street Fighter Stick Figures");
         this.client = client;
+        client.setMainFrame(this);
         initComponents();
     }
 
@@ -26,10 +27,11 @@ public class MainFrame extends JFrame {
         GameClient.setLoginResponseListener(loginPanel);
         GameClient.setCreateAccountResponseListener(loginPanel);
 
+
         cardPanel.add(loginPanel, "login");
 
         getContentPane().add(cardPanel);
-        setSize(400, 300);
+        setSize(400, 400);
         setLocationRelativeTo(null);
     }
 
@@ -52,5 +54,11 @@ public class MainFrame extends JFrame {
         SwingUtilities.invokeLater(() -> {
             gamePanel.requestFocusInWindow();
         });
+    }
+    public void showGameOver(String winner, String loser) {
+        GameOverPanel gameOverPanel = new GameOverPanel(winner, loser, client, this);
+        cardPanel.add(gameOverPanel, "gameover");
+        cardLayout.show(cardPanel, "gameover");
+        setSize(500, 300);
     }
 }

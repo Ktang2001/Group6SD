@@ -61,4 +61,24 @@ public class DatabaseManager {
         ps.setString(2, password);
         return ps.executeUpdate() > 0;
     }
+
+    public static void incrementWin(String username) {
+        String query = "UPDATE GameUsers SET wins = wins + 1 WHERE BINARY username = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, username);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void incrementLoss(String username) {
+        String query = "UPDATE GameUsers SET losses = losses + 1 WHERE BINARY username = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, username);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

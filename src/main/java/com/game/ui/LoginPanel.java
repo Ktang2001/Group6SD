@@ -33,6 +33,7 @@ public class LoginPanel extends JPanel implements GameClient.LoginResponseListen
 
         JLabel titleLabel = new JLabel("Login");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;

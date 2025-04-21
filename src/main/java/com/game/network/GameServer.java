@@ -70,6 +70,10 @@ public class GameServer extends AbstractServer {
                     // Clear waitingUser since we've paired them
                     waitingUser = null;
 
+                    // Initialize both players' positions
+                    playerPositions.put(player1, new int[]{100, 200});
+                    playerPositions.put(player2, new int[]{600, 200});
+
                     // Notify both players that the match has started
                     ConnectionToClient client1 = clientConnections.get(player1);
                     ConnectionToClient client2 = clientConnections.get(player2);
@@ -87,7 +91,8 @@ public class GameServer extends AbstractServer {
                 String user = mm.getUsername();
                 int[] pos = playerPositions.get(user);
                 if (pos == null) {
-                    pos = new int[]{100, 200}; // Default position
+                    pos = new int[]{user.equals(player1) ? 100 : 600, 200}; // spawn P1 left, P2 right
+                    playerPositions.put(user, pos);
                 }
 
                 // Apply movement and enforce boundaries
@@ -131,11 +136,27 @@ public class GameServer extends AbstractServer {
                         // Broadcast updated health and positions
                         GameUpdateMessage gum = new GameUpdateMessage(playerPositions, p1Health, p2Health);
                         sendToAllClients(gum);
+
+                        // Check for game over
+                        if (p1Health <= 0 || p2Health <= 0) {
+                            String winner = p1Health > 0 ? player1 : player2;
+                            String loser = p1Health <= 0 ? player1 : player2;
+
+                            // Send game over message
+                            sendToAllClients(new GameOverMessage(winner, loser));
+
+                            // Update database
+                            DatabaseManager.incrementWin(winner);
+                            DatabaseManager.incrementLoss(loser);
+
+                            // Optional: reset internal state
+                            p1Health = 100;
+                            p2Health = 100;
+                            playerPositions.clear();
+                        }
                     }
                 }
             }
-
-
         } catch (Exception e) { // Added matching 'catch' block
             e.printStackTrace(); // Log any exceptions that occur
         }

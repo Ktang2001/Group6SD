@@ -34,7 +34,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
     // Positions for each stick figure
     private int p1X = 100, p1Y = 200;
-    private int p2X = 400, p2Y = 200;
+    private int p2X = 600, p2Y = 200;
 
     private static final int MOVE_SPEED = 5;
 

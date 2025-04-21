@@ -1,6 +1,7 @@
 package com.game.ui;
 import com.game.network.GameClient;
 import com.game.network.messages.User;
+import com.game.database.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,11 +17,21 @@ public class GameOverPanel extends JPanel {
         backButton.addActionListener(e -> {
             User currentUser = client.getLoggedInUser();
             if (currentUser != null) {
-                frame.showLobby(currentUser);
+            	if (DatabaseManager.getConnection() == null) {
+            	    DatabaseManager.initializeDatabase();
+            	}
+                User refreshedUser = DatabaseManager.getUserStats(currentUser.getUsername());
+                if (refreshedUser != null) {
+                    client.setLoggedInUser(refreshedUser); 
+                    frame.showLobby(refreshedUser);
+                } else {
+                    System.out.println("Failed to refresh user stats.");
+                }
             } else {
                 System.out.println("No user logged in.");
             }
         });
+
 
         add(message, BorderLayout.CENTER);
         add(backButton, BorderLayout.SOUTH);

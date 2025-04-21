@@ -81,4 +81,21 @@ public class DatabaseManager {
             e.printStackTrace();
         }
     }
+    
+    public static User getUserStats(String username) {
+        String query = "SELECT wins, losses FROM GameUsers WHERE BINARY username = ?";
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int wins = rs.getInt("wins");
+                int losses = rs.getInt("losses");
+                return new User(username, wins, losses);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

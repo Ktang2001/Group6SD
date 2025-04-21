@@ -14,11 +14,15 @@ dependencies {
     // MySQL Connector dependency ktang
     //implementation files('C:/Users/ktang/OneDrive/Desktop/Testing Connection/Group6SD/mysql-connector-j-9.2.0.jar')
     //MySQL Connector Dependency Jathan
-    implementation files ('/Users/jathanneider/Desktop/StreetFighterStickFigures/mysql-connector-j-9.2.0.jar')
+    //implementation files ('/Users/jathanneider/Desktop/StreetFighterStickFigures/mysql-connector-j-9.2.0.jar')
     // OCSF dependency – place your OCSF jar in the libs folder ktang
     //implementation files('C:/Users/ktang/OneDrive/Desktop/Testing Connection/Group6SD/ocsf.jar')
     //OCSF Dependency Jathan
-    implementation files ('/Users/jathanneider/Desktop/StreetFighterStickFigures/ocsf.jar')
+    //implementation files ('/Users/jathanneider/Desktop/StreetFighterStickFigures/ocsf.jar')
+    // MySQL Connector dependency mason
+    implementation files('C:/Users/hexzy/git/Group6SD/mysql-connector-j-9.2.0.jar')
+    // OCSF dependency – place your OCSF jar in the libs folder mason
+    implementation files('C:/Users/hexzy/git/Group6SD/ocsf.jar')
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.11.0'
     
